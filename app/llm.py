@@ -1,7 +1,7 @@
 import os
 from app.prompt_openspecimen import AGENT_PROMPT
 from app.pdf_ingest import knowledge_base
-
+from pydantic import BaseModel
 from agno.agent import Agent
 
 # from agno.models.groq import Groq as AgentLLM
@@ -36,14 +36,19 @@ agent = Agent(
     user_id="common user",
 )
 
+class Suggestions(BaseModel):
+    suggestions: list[str]
 
 def get_ai_response(prompt, session_id="common session"):
     agent.session_id = session_id
-    return agent.run(prompt).content
+    agent.response_model = Suggestions
+    response = agent.run(prompt).content
+    return response.suggestions
 
 
 def get_ai_response_stream(prompt, session_id="common session"):
     agent.session_id = session_id
+    agent.response_model = None
     # run_response = agent.run(prompt, stream=True)
     # for chunk in run_response:
     #     yield chunk.content
