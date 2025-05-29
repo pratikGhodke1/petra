@@ -14,16 +14,12 @@ LLM_API_KEY = os.environ["LLM_API_KEY"]
 
 
 agent = Agent(
-    description=f"You are an expert",
+    description="You are an expert",
     model=AgentLLM(api_key=LLM_API_KEY),
     retries=3,
     markdown=True,
     instructions=[
         "Always search in knowledge base before answering.",
-        "Always use knowledge base context to provide and judge the answer for a question.",
-        "Only fetch data from the knowledge base and do not output anything outside the context provided to you unless said so.",
-        "Always answer with something even if you don't find anything. Say 'I don't know' if you don't know the answer.",
-        "Do not answer directly, instead give hints such that user solves problem step by step while learning.",
         "The final answer should be atomic and should not be broken down further",
     ],
     system_message=AGENT_PROMPT,
@@ -31,8 +27,9 @@ agent = Agent(
     add_history_to_messages=True,
     knowledge=knowledge_base,
     search_knowledge=True,
-    storage=SqliteAgentStorage(db_file="./data/db.sqlite", table_name="agent-baba"),
-    # debug_mode=True,
+    storage=SqliteAgentStorage(
+        db_file="./data/db.sqlite", table_name="agent-baba"
+    ),
     user_id="common user",
 )
 
